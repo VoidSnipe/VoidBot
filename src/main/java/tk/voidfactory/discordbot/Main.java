@@ -18,7 +18,7 @@ public class Main {
                 .setReconnectQueue(new SessionReconnectQueue());
         shardBuilder.addEventListener(new MessageListener());
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(System.getenv("PORT"))), 0);
         server.createContext("/", exchange -> exchange.sendResponseHeaders(204, 0));
         server.setExecutor(null);
         server.start();
