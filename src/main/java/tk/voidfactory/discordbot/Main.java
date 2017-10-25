@@ -1,3 +1,5 @@
+package tk.voidfactory.discordbot;
+
 import tk.voidfactory.discordbot.MessageListener;
 import com.sun.net.httpserver.HttpServer;
 

@@ -1,1 +1,1 @@
-java $JAVA_OPTS -cp lib/*:. Main
+web: java $JAVA_OPTS -cp lib/*:. tk.voidfactory.discordbot.Main
