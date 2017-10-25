@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="VoidBot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/VoidBot_jar</output-path>
+    <root id="archive" name="VoidBot.jar">
+      <element id="module-output" name="VoidBot" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/JDA-3.3.1_294-withDependencies.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

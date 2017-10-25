@@ -9,9 +9,18 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
+    <content url="file://$MODULE_DIR$/out/artifacts/VoidBot_jar" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="JDA-3.3.1_294-withDependencies" level="project" />
-    <orderEntry type="library" name="Maven: net.dv8tion:JDA:3.3.1_297" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: net.dv8tion:JDA:3.3.1_297">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/JDA-3.3.1_294-withDependencies.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
