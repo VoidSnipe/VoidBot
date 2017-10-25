@@ -7,19 +7,12 @@
     <groupId>groupId</groupId>
     <artifactId>VoidBot</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <name>jcenter-bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>3.3.1_297</version>
-            <type>pom</type>
+            <systemPath>${project.basedir}/lib/JDA-3.3.1_294-withDependencies.jar</systemPath>
         </dependency>
 
 
