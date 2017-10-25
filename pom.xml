@@ -12,6 +12,7 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>3.3.1_297</version>
+            <scope>system</scope>
             <systemPath>${project.basedir}/lib/JDA-3.3.1_294-withDependencies.jar</systemPath>
         </dependency>
 
