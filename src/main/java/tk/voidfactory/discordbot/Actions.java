@@ -45,7 +45,6 @@ public class Actions {
     }
 
     public static void reply(Member member, TextChannel textChannel, String text) {
-        Message reply = textChannel.sendMessage(member.getAsMention() + ", " + text).complete();
-        reply.delete().queueAfter(5, TimeUnit.SECONDS);
+        textChannel.sendMessage(member.getAsMention() + ", " + text).queue(reply ->  reply.delete().queueAfter(5, TimeUnit.SECONDS));
     }
 }

@@ -1,5 +1,6 @@
 package tk.voidfactory.discordbot;
 
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -59,5 +60,26 @@ public class CommandEngine {
         if (notnull == null) throw new IllegalStateException();
         if (!member.hasPermission(permission)) throw new PermissionDeniedException();
         runnable.run();
+    }
+
+    public static void sendHelp(Member member) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("Справка");
+        builder.setDescription("Доступные вам комманды:");
+        builder.addField("!join", "Добавляет вас в очередь голосового чата (на итогах недели)", true);
+        builder.addField("!leave", "Убирает вас из очереди голосового чата (на итогах недели)", true);
+        if (member.hasPermission(Permission.MANAGE_PERMISSIONS))
+        {
+            builder.addField("!mute","Переводит голосовой канал в режим \"только администрация\"", true);
+            builder.addField("!unmute","Выводит голосовой канал из режима \"только администрация\"", true);
+        }
+        if (member.hasPermission(Permission.ADMINISTRATOR))
+        {
+            builder.addField("!queue","Переводит голосовой канал в режим очереди", true);
+            builder.addField("!unqueue","Выводит голосовой канал из режима очереди", true);
+            builder.addField("!next", "Выкидывает текущего пользователя из очереди", true);
+        }
+
+        member.getUser().openPrivateChannel().queue(channel -> channel.sendMessage(builder.build()).queue());
     }
 }
