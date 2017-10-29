@@ -5,6 +5,8 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
+import static net.dv8tion.jda.core.utils.Helpers.getStackTrace;
+
 
 public class CommandEngine {
     private static class PermissionDeniedException extends Exception {
@@ -23,7 +25,7 @@ public class CommandEngine {
                     break;
                 /* Move everybody to the channel */
                 case "move":
-                    checkRun(() -> Actions.moveAll(voiceChannel), voiceChannel, member, Permission.MANAGE_PERMISSIONS);
+                    checkRun(() -> Actions.moveAll(voiceChannel), voiceChannel, member, Permission.VOICE_MOVE_OTHERS);
                     break;
                 /* Queue managing */
                 case "queue":
@@ -49,7 +51,7 @@ public class CommandEngine {
         } catch (PermissionDeniedException | IllegalStateException e) {
             Actions.reply(member, textChannel, "сейчас вы не можете сделать это");
         } catch (Exception e) {
-            Actions.reply(member, textChannel, e.getStackTrace().toString());
+            Actions.reply(member, textChannel, getStackTrace(e));
         }
     }
 
