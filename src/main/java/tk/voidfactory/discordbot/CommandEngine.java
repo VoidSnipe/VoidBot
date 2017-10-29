@@ -6,6 +6,8 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
+import java.awt.*;
+
 import static net.dv8tion.jda.core.utils.Helpers.getStackTrace;
 
 
@@ -45,6 +47,9 @@ public class CommandEngine {
                 case "leave":
                     checkRun(() -> VoiceQueue.get(voiceChannel).remove(member, textChannel), VoiceQueue.get(voiceChannel), member);
                     break;
+                case "help":
+                    sendHelp(member, textChannel);
+                    break;
                 default:
                     Actions.reply(member, textChannel, "нет такой команды, воспользуйтесь !help для уточнения");
             }
@@ -62,16 +67,22 @@ public class CommandEngine {
         runnable.run();
     }
 
-    public static void sendHelp(Member member) {
+    public static void sendHelp(Member member, TextChannel textChannel) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Справка");
-        builder.setDescription("Доступные вам комманды:");
-        builder.addField("!join", "Добавляет вас в очередь голосового чата (на итогах недели)", true);
-        builder.addField("!leave", "Убирает вас из очереди голосового чата (на итогах недели)", true);
+        builder
+                .setTitle("Справка")
+                .setDescription("Доступные вам комманды:")
+                .setColor(Color.green)
+                .addField("!join", "Добавляет вас в очередь голосового чата (на итогах недели)", true)
+                .addField("!leave", "Убирает вас из очереди голосового чата (на итогах недели)", true);
         if (member.hasPermission(Permission.MANAGE_PERMISSIONS))
         {
             builder.addField("!mute","Переводит голосовой канал в режим \"только администрация\"", true);
             builder.addField("!unmute","Выводит голосовой канал из режима \"только администрация\"", true);
+        }
+        if (member.hasPermission(Permission.VOICE_MOVE_OTHERS))
+        {
+            builder.addField("!move","Перемещает всех остальных к вам на канал", true);
         }
         if (member.hasPermission(Permission.ADMINISTRATOR))
         {
@@ -79,7 +90,7 @@ public class CommandEngine {
             builder.addField("!unqueue","Выводит голосовой канал из режима очереди", true);
             builder.addField("!next", "Выкидывает текущего пользователя из очереди", true);
         }
-
+        Actions.reply(member, textChannel, "справка была выслана вам личным сообщением");
         member.getUser().openPrivateChannel().queue(channel -> channel.sendMessage(builder.build()).queue());
     }
 }
