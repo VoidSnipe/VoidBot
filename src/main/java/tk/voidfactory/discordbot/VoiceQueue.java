@@ -15,7 +15,7 @@ public class VoiceQueue {
     private static Map<Channel, VoiceQueue> list = new ConcurrentHashMap<>();
 
     public static VoiceQueue get(VoiceChannel channel) {
-        return list.get(channel);
+        return channel==null?null:list.get(channel);
     }
 
     public static void create(VoiceChannel channel, TextChannel announceChannel) {
@@ -26,14 +26,16 @@ public class VoiceQueue {
 
     private Queue<Member> queue;
     private VoiceChannel channel;
+    private TextChannel announceChannel;
     private Message announcement;
     private Role enqueuedRole;
     private Member enqueued;
 
     public VoiceQueue(VoiceChannel channel, TextChannel announceChannel) {
         this.channel = channel;
+        this.announceChannel = announceChannel;
         queue = new LinkedList<>();
-        announce(announceChannel, false);
+        announce(false);
         createRole(channel);
         enqueued = null;
     }
@@ -47,7 +49,7 @@ public class VoiceQueue {
         channel.createPermissionOverride(enqueuedRole).complete().getManagerUpdatable().grant(Permission.VOICE_SPEAK).update().complete();
     }
 
-    public void announce(TextChannel announceChannel, boolean remove) {
+    public void announce(boolean remove) {
         if (remove) try {
             announcement.delete().complete();
         } catch (Exception e) {
@@ -66,10 +68,12 @@ public class VoiceQueue {
 
     }
 
-    public VoiceQueue add(Member member) {
-        remove(member);
+    public VoiceQueue add(Member member, TextChannel replyChannel) {
+        remove(member, null);
         queue.add(member);
+        Actions.reply(member,replyChannel,"вы добавленны в очередь канала " + channel.getName());
         if (enqueued == null) next();
+        announce(true);
         return this;
     }
 
@@ -87,9 +91,11 @@ public class VoiceQueue {
         return this;
     }
 
-    public VoiceQueue remove(Member member) {
+    public VoiceQueue remove(Member member, TextChannel replyChannel) {
         queue.remove(member);
         if (enqueued == member) next();
+        if (replyChannel != null) Actions.reply(member, replyChannel,"вы удаленны из очереди канала " + channel.getName());
+        announce(true);
         return this;
     }
 

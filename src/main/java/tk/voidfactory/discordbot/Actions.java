@@ -1,10 +1,11 @@
 package tk.voidfactory.discordbot;
 
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.PermissionOverride;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.requests.RestAction;
+
+import java.util.concurrent.TimeUnit;
 
 public class Actions {
     public static void muteChannel(VoiceChannel channel, boolean mute) {
@@ -18,28 +19,33 @@ public class Actions {
         } else {
             override.getManagerUpdatable().clear(Permission.VOICE_SPEAK).update().complete();
         }
-        channel.getMembers().forEach(member -> updateMember(member));
+        channel.getMembers().forEach(member -> autoMove(member, null));
     }
 
     public static void moveAll(VoiceChannel channel) {
         if (channel == null) return;
-        GuildController controller = channel.getGuild().getController();
 
         channel
                 .getGuild()
                 .getVoiceChannels()
-                .forEach(chan -> {
-                    if (true) {
-                        chan
-                                .getMembers()
-                                .forEach(member -> controller
-                                        .moveVoiceMember(member, channel).complete());
-                    }
-                });
+                .forEach(chan -> chan
+                        .getMembers()
+                        .forEach(member -> autoMove(member, channel)));
     }
 
-    public static void updateMember(Member member) {
-        member.getGuild().getController().moveVoiceMember(member,member.getVoiceState().getChannel()).complete();
+    public static void autoMove(Member member ,VoiceChannel channel) {
+        if (channel == null) channel = member.getVoiceState().getChannel();
+        RestAction action = member.getGuild().getController().moveVoiceMember(member,channel);
+        try {
+            action.complete(false);
+        } catch (RateLimitedException e) {
+            action.completeAfter(e.getRetryAfter(), TimeUnit.MILLISECONDS);
+        }
+
     }
 
+    public static void reply(Member member, TextChannel textChannel, String text) {
+        Message reply = textChannel.sendMessage(member.getAsMention() + ", " + text).complete();
+        reply.delete().queueAfter(5, TimeUnit.SECONDS);
+    }
 }

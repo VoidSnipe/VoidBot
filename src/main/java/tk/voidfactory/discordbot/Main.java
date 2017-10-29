@@ -1,8 +1,6 @@
 package tk.voidfactory.discordbot;
 
-import tk.voidfactory.discordbot.MessageListener;
 import com.sun.net.httpserver.HttpServer;
-
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
