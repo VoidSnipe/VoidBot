@@ -25,8 +25,8 @@ public class PriceCheck {
 
         @Override
         public String toString() {
-            return "Покупка: " + (maxsell == Integer.MIN_VALUE ? "N/A" : minsell + " - " + maxsell) +
-                    "\nПродажа: " + (maxbuy == Integer.MIN_VALUE ? "N/A" : minbuy + " - " + maxbuy);
+            return "Покупка: " + (maxbuy == Integer.MIN_VALUE ? "N/A" : minbuy + " - " + maxbuy) +
+                    "\nПродажа: " + (maxsell == Integer.MIN_VALUE ? "N/A" : minsell + " - " + maxsell);
         }
     }
 

@@ -56,6 +56,7 @@ public class CommandEngine {
                         Actions.reply(member,textChannel,"на этом канале нельзя смотреть цены");
                     else
                     try {
+                        Actions.reply(member,textChannel,"oбрабатываю запрос...");
                         new PriceCheck(args).process().print(textChannel);
                     } catch (JSONException | IndexOutOfBoundsException e) {
                         Actions.reply(member,textChannel,"не удалось получить данные по вашему запросу");
