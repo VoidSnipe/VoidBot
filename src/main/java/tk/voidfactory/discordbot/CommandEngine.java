@@ -5,6 +5,10 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
+import org.json.JSONException;
+import tk.voidfactory.discordbot.data.PriceCheck;
+import tk.voidfactory.discordbot.data.SyncChannelSet;
+import tk.voidfactory.discordbot.data.WorldData;
 
 import java.awt.*;
 
@@ -47,8 +51,36 @@ public class CommandEngine {
                 case "leave":
                     checkRun(() -> VoiceQueue.get(voiceChannel).remove(member, textChannel), VoiceQueue.get(voiceChannel), member);
                     break;
+                case "price": case "цена":
+                    if (!SyncChannelSet.get(textChannel))
+                        Actions.reply(member,textChannel,"на этом канале нельзя смотреть цены");
+                    else
+                    try {
+                        new PriceCheck(args).process().print(textChannel);
+                    } catch (JSONException | IndexOutOfBoundsException e) {
+                        Actions.reply(member,textChannel,"не удалось получить данные по вашему запросу");
+                    }
+                    break;
+                case "baro":
+                    if (!SyncChannelSet.get(textChannel))
+                        Actions.reply(member,textChannel,"на этом канале нельзя смотреть время");
+                    else
+                    textChannel.sendMessage(WorldData.baro()).queue();
+                    break;
+                case "cycle":
+                    if (!SyncChannelSet.get(textChannel))
+                        Actions.reply(member,textChannel,"на этом канале нельзя смотреть время");
+                    else
+                    textChannel.sendMessage(WorldData.cycle()).queue();
+                    break;
                 case "help":
                     sendHelp(member, textChannel);
+                    break;
+                case "allow":
+                    checkRun(() -> SyncChannelSet.add(textChannel), textChannel, member, Permission.ADMINISTRATOR);
+                    break;
+                case "disallow":
+                    checkRun(() -> SyncChannelSet.remove(textChannel), textChannel, member, Permission.ADMINISTRATOR);
                     break;
                 default:
                     Actions.reply(member, textChannel, "нет такой команды, воспользуйтесь !help для уточнения");

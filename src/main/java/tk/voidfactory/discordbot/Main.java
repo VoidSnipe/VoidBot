@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.requests.SessionReconnectQueue;
+import tk.voidfactory.discordbot.data.SyncChannelSet;
 
 import java.net.InetSocketAddress;
 
@@ -15,7 +16,7 @@ public class Main {
                 .setToken(System.getenv("API_TOKEN"))
                 .setReconnectQueue(new SessionReconnectQueue());
         shardBuilder.addEventListener(new MessageListener());
-
+        SyncChannelSet.init();
         HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(System.getenv("PORT"))), 0);
         server.createContext("/", exchange -> exchange.sendResponseHeaders(204, 0));
         server.setExecutor(null);
