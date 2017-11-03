@@ -56,10 +56,11 @@ public class CommandEngine {
                         Actions.reply(member, textChannel, "на этом канале нельзя смотреть цены");
                     else
                         new Thread(() -> {
+                            Message reply = textChannel.sendMessage(member.getAsMention() + ", подождите, обрабатываю запрос...").complete();
                             try {
-                                textChannel.sendMessage(member.getAsMention() + ", подождите, обрабатываю запрос...").complete()
-                                        .editMessage(new PriceCheck(args).process().print()).queue();
+                                reply.editMessage(new PriceCheck(args).process().print()).queue();
                             } catch (JSONException | IndexOutOfBoundsException e) {
+                                reply.delete().queue();
                                 Actions.reply(member, textChannel, "не удалось получить данные по вашему запросу");
                             }
                         }).start();
