@@ -88,7 +88,7 @@ public class WorldData {
                 .setColor(time>50?Color.WHITE:Color.BLUE);
         StringBuilder sb = builder.getDescriptionBuilder()
                 .append("\nДо наступления ").append(time>50?"ночи":"дня").append(": ");
-        time = (time + (time>50?100:0)) % 150;
+        time = (time + (time<50?0:100)) % 150;
         long minutes = time % 60; time /= 60;
         sb
                 .append(getLocalized(time,"час","часа","часов")).append(" ")
