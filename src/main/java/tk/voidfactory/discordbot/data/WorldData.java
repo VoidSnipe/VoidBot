@@ -82,7 +82,7 @@ public class WorldData {
 
         long time = (cetus.getTime() - now)/1000;
         long seconds = time % 60;
-        time = time / 60;
+        time = (time / 60 + 150) % 150;
         builder
                 .setTitle("Равнины эйдолона: "+(time>50?"ДЕНЬ":"НОЧЬ"))
                 .setColor(time>50?Color.WHITE:Color.BLUE);
