@@ -77,7 +77,7 @@ public class WorldData {
 
     public static synchronized MessageEmbed cycle() {
         long now = new Date().getTime();
-        if (!ready || now<cetus.getTime()) update();
+        if (!ready || now>cetus.getTime()) update();
         EmbedBuilder builder = new EmbedBuilder();
 
         long time = (cetus.getTime() - now)/1000;

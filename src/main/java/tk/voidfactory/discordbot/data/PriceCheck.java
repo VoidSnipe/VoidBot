@@ -1,13 +1,10 @@
 package tk.voidfactory.discordbot.data;
 
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.ranges.RangeException;
 
-import javax.net.ssl.SSLHandshakeException;
 import java.awt.*;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -79,12 +76,12 @@ public class PriceCheck {
         return this;
     }
 
-    public void print(TextChannel channel) {
+    public MessageEmbed print() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.PINK);
         if (data.isEmpty()) throw new IndexOutOfBoundsException();
         data.forEach(itemData -> eb.addField(itemData.name, itemData.toString(), true));
         eb.setFooter("Данные с сайта https://warframe.market", null);
-        channel.sendMessage(eb.build()).queue();
+        return eb.build();
     }
 }

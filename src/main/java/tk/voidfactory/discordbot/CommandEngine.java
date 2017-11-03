@@ -2,15 +2,14 @@ package tk.voidfactory.discordbot;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.VoiceChannel;
+import net.dv8tion.jda.core.entities.*;
 import org.json.JSONException;
 import tk.voidfactory.discordbot.data.PriceCheck;
 import tk.voidfactory.discordbot.data.SyncChannelSet;
 import tk.voidfactory.discordbot.data.WorldData;
 
 import java.awt.*;
+import java.util.concurrent.FutureTask;
 
 import static net.dv8tion.jda.core.utils.Helpers.getStackTrace;
 
@@ -51,28 +50,33 @@ public class CommandEngine {
                 case "leave":
                     checkRun(() -> VoiceQueue.get(voiceChannel).remove(member, textChannel), VoiceQueue.get(voiceChannel), member);
                     break;
-                case "price": case "цена":
+                case "price":
+                case "цена":
                     if (!SyncChannelSet.get(textChannel))
-                        Actions.reply(member,textChannel,"на этом канале нельзя смотреть цены");
+                        Actions.reply(member, textChannel, "на этом канале нельзя смотреть цены");
                     else
-                    try {
-                        Actions.reply(member,textChannel,"oбрабатываю запрос...");
-                        new PriceCheck(args).process().print(textChannel);
-                    } catch (JSONException | IndexOutOfBoundsException e) {
-                        Actions.reply(member,textChannel,"не удалось получить данные по вашему запросу");
-                    }
+                        new Thread(() -> {
+                            try {
+                                textChannel.sendMessage(member.getAsMention() + ", подождите, обрабатываю запрос...").complete()
+                                        .editMessage(new PriceCheck(args).process().print()).queue();
+                            } catch (JSONException | IndexOutOfBoundsException e) {
+                                Actions.reply(member, textChannel, "не удалось получить данные по вашему запросу");
+                            }
+                        });
+
+
                     break;
                 case "baro":
                     if (!SyncChannelSet.get(textChannel))
-                        Actions.reply(member,textChannel,"на этом канале нельзя смотреть время");
+                        Actions.reply(member, textChannel, "на этом канале нельзя смотреть время");
                     else
-                    textChannel.sendMessage(WorldData.baro()).queue();
+                        textChannel.sendMessage(WorldData.baro()).queue();
                     break;
                 case "cycle":
                     if (!SyncChannelSet.get(textChannel))
-                        Actions.reply(member,textChannel,"на этом канале нельзя смотреть время");
+                        Actions.reply(member, textChannel, "на этом канале нельзя смотреть время");
                     else
-                    textChannel.sendMessage(WorldData.cycle()).queue();
+                        textChannel.sendMessage(WorldData.cycle()).queue();
                     break;
                 case "help":
                     sendHelp(member, textChannel);
@@ -108,19 +112,16 @@ public class CommandEngine {
                 .setColor(Color.green)
                 .addField("!join", "Добавляет вас в очередь голосового чата (на итогах недели)", true)
                 .addField("!leave", "Убирает вас из очереди голосового чата (на итогах недели)", true);
-        if (member.hasPermission(Permission.MANAGE_PERMISSIONS))
-        {
-            builder.addField("!mute","Переводит голосовой канал в режим \"только администрация\"", true);
-            builder.addField("!unmute","Выводит голосовой канал из режима \"только администрация\"", true);
+        if (member.hasPermission(Permission.MANAGE_PERMISSIONS)) {
+            builder.addField("!mute", "Переводит голосовой канал в режим \"только администрация\"", true);
+            builder.addField("!unmute", "Выводит голосовой канал из режима \"только администрация\"", true);
         }
-        if (member.hasPermission(Permission.VOICE_MOVE_OTHERS))
-        {
-            builder.addField("!move","Перемещает всех остальных к вам на канал", true);
+        if (member.hasPermission(Permission.VOICE_MOVE_OTHERS)) {
+            builder.addField("!move", "Перемещает всех остальных к вам на канал", true);
         }
-        if (member.hasPermission(Permission.ADMINISTRATOR))
-        {
-            builder.addField("!queue","Переводит голосовой канал в режим очереди", true);
-            builder.addField("!unqueue","Выводит голосовой канал из режима очереди", true);
+        if (member.hasPermission(Permission.ADMINISTRATOR)) {
+            builder.addField("!queue", "Переводит голосовой канал в режим очереди", true);
+            builder.addField("!unqueue", "Выводит голосовой канал из режима очереди", true);
             builder.addField("!next", "Выкидывает текущего пользователя из очереди", true);
         }
         Actions.reply(member, textChannel, "справка была выслана вам личным сообщением");
