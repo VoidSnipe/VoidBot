@@ -62,7 +62,7 @@ public class CommandEngine {
                             } catch (JSONException | IndexOutOfBoundsException e) {
                                 Actions.reply(member, textChannel, "не удалось получить данные по вашему запросу");
                             }
-                        }).run();
+                        }).start();
                     break;
                 case "baro":
                     if (!SyncChannelSet.get(textChannel))
