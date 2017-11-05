@@ -7,9 +7,6 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -52,13 +49,17 @@ public class Main extends ListenerAdapter {
         String[] command = event.getMessage().getContent().split(" ", 2);
         Guild guild = event.getGuild();
         if (guild != null) {
-            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
-            if ("~play".equals(command[0]) && command.length == 2) {
+            if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+                return;
+            } else if ("~play".equals(command[0]) && command.length == 2) {
                 loadAndPlay(event.getTextChannel(), command[1], event.getMember().getVoiceState().getChannel());
             } else if ("~skip".equals(command[0])) {
                 skipTrack(event.getTextChannel());
             } else if ("~leave".equals(command[0])) {
                 guild.getAudioManager().closeAudioConnection();
+            } else if ("~purge".equals(command[0])) {
+                getGuildAudioPlayer(event.getGuild()).scheduler.clear();
+                skipTrack(event.getTextChannel());
             }
         }
 
@@ -83,7 +84,7 @@ public class Main extends ListenerAdapter {
                 if (firstTrack == null) {
                     firstTrack = playlist.getTracks().get(0);
                 }
-                for (int i =1; i<playlist.getTracks().size(); i++) {
+                for (int i = 1; i < playlist.getTracks().size(); i++) {
                     musicManager.scheduler.queue(playlist.getTracks().get(i));
                 }
                 channel.sendMessage("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")").queue();
