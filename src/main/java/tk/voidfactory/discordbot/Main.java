@@ -16,6 +16,7 @@ public class Main {
                 .setToken(System.getenv("API_TOKEN"))
                 .setReconnectQueue(new SessionReconnectQueue());
         shardBuilder.addEventListener(new MessageListener());
+        shardBuilder.addEventListener(new tk.voidfactory.discordbot.music.Main());
         SyncChannelSet.init();
         HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(System.getenv("PORT"))), 0);
         server.createContext("/", exchange -> exchange.sendResponseHeaders(204, 0));
