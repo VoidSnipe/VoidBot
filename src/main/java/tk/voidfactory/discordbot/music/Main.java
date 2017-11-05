@@ -53,7 +53,8 @@ public class Main extends ListenerAdapter {
         if (guild != null) {
             if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
                 return;
-            } else if ("~play".equals(command[0]) && command.length == 2) {
+            }
+            if ("~play".equals(command[0]) && command.length == 2) {
                 loadAndPlay(event.getTextChannel(), command[1], event.getMember().getVoiceState().getChannel());
             } else if ("~skip".equals(command[0])) {
                 skipTrack(event.getTextChannel());
@@ -99,6 +100,7 @@ public class Main extends ListenerAdapter {
             @Override
             public void loadFailed(FriendlyException exception) {
                 channel.sendMessage("Could not play: " + exception.getMessage()).queue();
+                exception.printStackTrace();
             }
         });
     }
