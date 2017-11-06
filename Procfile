@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp lib/*:target/classes tk.voidfactory.discordbot.Main
+web: mvn exec:java
