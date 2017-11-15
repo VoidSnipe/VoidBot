@@ -15,7 +15,7 @@ public class Main {
         JDABuilder shardBuilder = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("API_TOKEN"))
                 .setReconnectQueue(new SessionReconnectQueue());
-        shardBuilder.addEventListener(new MessageListener());
+        shardBuilder.addEventListener(new MainEngine(Settings.PREFIX));
         shardBuilder.addEventListener(new tk.voidfactory.discordbot.music.Main());
         SyncChannelSet.init();
         HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(System.getenv("PORT"))), 0);

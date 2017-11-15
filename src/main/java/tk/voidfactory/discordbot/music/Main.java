@@ -21,30 +21,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main extends ListenerAdapter {
-  private final AudioPlayerManager playerManager;
-  private final Map<Long, GuildMusicManager> musicManagers;
+    private final AudioPlayerManager playerManager;
+    private final Map<Long, GuildMusicManager> musicManagers;
 
-  public Main() {
-    this.musicManagers = new HashMap<>();
+    public Main() {
+        this.musicManagers = new HashMap<>();
 
-    this.playerManager = new DefaultAudioPlayerManager();
-    AudioSourceManagers.registerRemoteSources(playerManager);
-    AudioSourceManagers.registerLocalSource(playerManager);
-  }
-
-  private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
-    long guildId = Long.parseLong(guild.getId());
-    GuildMusicManager musicManager = musicManagers.get(guildId);
-
-    if (musicManager == null) {
-      musicManager = new GuildMusicManager(playerManager);
-      musicManagers.put(guildId, musicManager);
+        this.playerManager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerRemoteSources(playerManager);
+        AudioSourceManagers.registerLocalSource(playerManager);
     }
 
-    guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
+    private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+        long guildId = Long.parseLong(guild.getId());
+        GuildMusicManager musicManager = musicManagers.get(guildId);
 
-    return musicManager;
-  }
+        if (musicManager == null) {
+            musicManager = new GuildMusicManager(playerManager);
+            musicManagers.put(guildId, musicManager);
+        }
+
+        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
+
+        return musicManager;
+    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -66,6 +66,7 @@ public class Main extends ListenerAdapter {
             }
         }
     }
+
     private void loadAndPlay(final TextChannel channel, final String trackUrl, VoiceChannel voiceChannel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
@@ -105,25 +106,25 @@ public class Main extends ListenerAdapter {
         });
     }
 
-  private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, VoiceChannel voiceChannel) {
-    //connectToFirstVoiceChannel(guild.getAudioManager());
-    guild.getAudioManager().openAudioConnection(voiceChannel);
-    musicManager.scheduler.queue(track);
-  }
-
-  private void skipTrack(TextChannel channel) {
-    GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-    musicManager.scheduler.nextTrack();
-
-    channel.sendMessage("Skipped to next track.").queue();
-  }
-
-  private static void connectToFirstVoiceChannel(AudioManager audioManager) {
-    if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
-      for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
-        audioManager.openAudioConnection(voiceChannel);
-        break;
-      }
+    private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, VoiceChannel voiceChannel) {
+        //connectToFirstVoiceChannel(guild.getAudioManager());
+        guild.getAudioManager().openAudioConnection(voiceChannel);
+        musicManager.scheduler.queue(track);
     }
-  }
+
+    private void skipTrack(TextChannel channel) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        musicManager.scheduler.nextTrack();
+
+        channel.sendMessage("Skipped to next track.").queue();
+    }
+
+    private static void connectToFirstVoiceChannel(AudioManager audioManager) {
+        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
+            for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
+                audioManager.openAudioConnection(voiceChannel);
+                break;
+            }
+        }
+    }
 }

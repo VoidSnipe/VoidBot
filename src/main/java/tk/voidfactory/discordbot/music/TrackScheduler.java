@@ -52,6 +52,7 @@ public class TrackScheduler extends AudioEventAdapter {
         if (endReason.mayStartNext) {
             nextTrack();
         }
+
     }
 
     public void clear() {
