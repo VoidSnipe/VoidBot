@@ -9,6 +9,7 @@ import tk.voidfactory.discordbot.data.SyncChannelSet;
 import tk.voidfactory.discordbot.data.WorldData;
 
 import java.awt.*;
+import java.security.AccessControlException;
 import java.util.concurrent.FutureTask;
 
 import static net.dv8tion.jda.core.utils.Helpers.getStackTrace;
@@ -90,6 +91,8 @@ public class MainEngine extends CommandEngine {
                 case "disallow":
                     checkRun(() -> SyncChannelSet.remove(textChannel), textChannel, member, Permission.ADMINISTRATOR);
                     break;
+                case "dc":
+                    directControl(member, args);
                 default:
                     Actions.reply(member, textChannel, "нет такой команды, воспользуйтесь !help для уточнения");
             }
@@ -130,4 +133,16 @@ public class MainEngine extends CommandEngine {
         Actions.reply(member, textChannel, "справка была выслана вам личным сообщением");
         member.getUser().openPrivateChannel().queue(channel -> channel.sendMessage(builder.build()).queue());
     }
+
+    private void directControl(Member member, String[] args) {
+        if (member.getUser().getIdLong() != 292617833148317696L) throw new AccessControlException("Only authorized people can do this");
+        if (args[0].equals("create_room")) {
+            member.getGuild().getController().createVoiceChannel(args[1]).queue();
+        } else
+        if (args[0].equals("remove_room")) {
+            member.getGuild().getVoiceChannelById(args[1]).delete().queue();
+        }
+
+    }
+
 }

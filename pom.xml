@@ -4,17 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
+    <groupId>VoidSnipe</groupId>
     <artifactId>VoidBot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <repositories>
-        <repository>
-            <id>central</id>
-            <name>bintray</name>
-            <url>http://jcenter.bintray.com</url>
-        </repository>
-
         <repository>
             <id>jcenter</id>
             <name>jcenter-bintray</name>
@@ -32,13 +26,13 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.3.1_302</version>
+            <version>3.4.0_319</version>
         </dependency>
 
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>1.2.42</version>
+            <version>1.2.45</version>
         </dependency>
     </dependencies>
 
