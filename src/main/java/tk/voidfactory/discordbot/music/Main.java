@@ -119,9 +119,4 @@ public class Main extends ListenerAdapter {
         channel.sendMessage("Skipped to next track.").queue();
     }
 
-    private static void connectToFirstVoiceChannel(AudioManager audioManager) {
-        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
-            audioManager.getGuild().getVoiceChannels().stream().findFirst().ifPresent(audioManager::openAudioConnection);
-        }
-    }
 }
