@@ -48,7 +48,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        String[] command = event.getMessage().getContent().split(" ", 2);
+        String[] command = event.getMessage().getContentRaw().split(" ", 2);
         Guild guild = event.getGuild();
         if (guild != null) {
             if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
@@ -121,10 +121,7 @@ public class Main extends ListenerAdapter {
 
     private static void connectToFirstVoiceChannel(AudioManager audioManager) {
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
-            for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
-                audioManager.openAudioConnection(voiceChannel);
-                break;
-            }
+            audioManager.getGuild().getVoiceChannels().stream().findFirst().ifPresent(audioManager::openAudioConnection);
         }
     }
 }

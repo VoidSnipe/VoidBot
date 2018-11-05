@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 
 public  class CommandEngine extends ListenerAdapter {
 
@@ -16,10 +17,10 @@ public  class CommandEngine extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getGuild() == null) return;
-        String text = event.getMessage().getContent();
+        String text = event.getMessage().getContentRaw();
         if (text.startsWith(prefix)) {
             LinkedList<String> argList = new LinkedList<>(Arrays.asList(text.split("\\s+")));
-            String command = argList.poll().substring(prefix.length());
+            String command = Objects.requireNonNull(argList.poll()).substring(prefix.length());
             execute(command,event.getMember(),event.getMember().getVoiceState().getChannel(),event.getTextChannel(),argList.toArray(new String[0]));
             event.getMessage().delete().queue();
         }

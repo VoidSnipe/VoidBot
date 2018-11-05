@@ -7,22 +7,22 @@ import net.dv8tion.jda.core.requests.RestAction;
 
 import java.util.concurrent.TimeUnit;
 
-public class Actions {
-    public static void muteChannel(VoiceChannel channel, boolean mute) {
+class Actions {
+    static void muteChannel(VoiceChannel channel, boolean mute) {
         if (channel == null) return;
         PermissionOverride override = channel.getPermissionOverride(channel.getGuild().getPublicRole());
         if (override == null)
             override = channel.createPermissionOverride(channel.getGuild().getPublicRole()).complete();
         if (mute) {
-            override.getManagerUpdatable().deny(Permission.VOICE_SPEAK).update().complete();
+            override.getManager().deny(Permission.VOICE_SPEAK).complete();
 
         } else {
-            override.getManagerUpdatable().clear(Permission.VOICE_SPEAK).update().complete();
+            override.getManager().clear(Permission.VOICE_SPEAK).complete();
         }
         channel.getMembers().forEach(member -> autoMove(member, null));
     }
 
-    public static void moveAll(VoiceChannel channel) {
+    static void moveAll(VoiceChannel channel) {
         if (channel == null) return;
 
         channel
@@ -33,7 +33,7 @@ public class Actions {
                         .forEach(member -> autoMove(member, channel)));
     }
 
-    public static void autoMove(Member member ,VoiceChannel channel) {
+    private static void autoMove(Member member, VoiceChannel channel) {
         if (channel == null) channel = member.getVoiceState().getChannel();
         RestAction action = member.getGuild().getController().moveVoiceMember(member,channel);
         try {
@@ -44,7 +44,7 @@ public class Actions {
 
     }
 
-    public static void reply(Member member, TextChannel textChannel, String text) {
+    static void reply(Member member, TextChannel textChannel, String text) {
         textChannel.sendMessage(member.getAsMention() + ", " + text).queue(reply ->  reply.delete().queueAfter(5, TimeUnit.SECONDS));
     }
 }

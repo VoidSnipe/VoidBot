@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VoiceQueue {
+class VoiceQueue {
     private static Map<Channel, VoiceQueue> list = new ConcurrentHashMap<>();
 
-    public static VoiceQueue get(VoiceChannel channel) {
+    static VoiceQueue get(VoiceChannel channel) {
         return channel==null?null:list.get(channel);
     }
 
-    public static void create(VoiceChannel channel, TextChannel announceChannel) {
+    static void create(VoiceChannel channel, TextChannel announceChannel) {
         VoiceQueue old = list.get(channel);
         if (old != null) old.delete();
         list.put(channel, new VoiceQueue(channel, announceChannel));
@@ -31,7 +31,7 @@ public class VoiceQueue {
     private Role enqueuedRole;
     private Member enqueued;
 
-    public VoiceQueue(VoiceChannel channel, TextChannel announceChannel) {
+    private VoiceQueue(VoiceChannel channel, TextChannel announceChannel) {
         this.channel = channel;
         this.announceChannel = announceChannel;
         queue = new LinkedList<>();
@@ -46,17 +46,17 @@ public class VoiceQueue {
         guild.getRolesByName("Enqueued @ " + channel.getName(), true).forEach(role -> role.delete().complete());
         enqueuedRole = guild.getPublicRole().createCopy().complete();
         enqueuedRole.getManager().setName("Enqueued @ " + channel.getName()).complete();
-        channel.createPermissionOverride(enqueuedRole).complete().getManagerUpdatable().grant(Permission.VOICE_SPEAK).update().complete();
+        channel.createPermissionOverride(enqueuedRole).complete().getManager().grant(Permission.VOICE_SPEAK).complete();
     }
 
-    public void announce(boolean remove) {
+    void announce(boolean remove) {
         if (remove) try {
             announcement.delete().complete();
         } catch (Exception e) {
             announcement = null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("\n**Очередь для " + channel.getName() + "**\n");
+        sb.append("\n**Очередь для ").append(channel.getName()).append("**\n");
         if (enqueued != null) {
             sb.append(":loud_sound: ").append("*").append(enqueued.getEffectiveName()).append("*\n");
         }
@@ -68,7 +68,7 @@ public class VoiceQueue {
 
     }
 
-    public VoiceQueue add(Member member, TextChannel replyChannel) {
+    VoiceQueue add(Member member, TextChannel replyChannel) {
         remove(member, null);
         queue.add(member);
         Actions.reply(member,replyChannel,"вы добавленны в очередь канала " + channel.getName());
@@ -77,7 +77,7 @@ public class VoiceQueue {
         return this;
     }
 
-    public VoiceQueue next() {
+    VoiceQueue next() {
         GuildController controller = channel.getGuild().getController();
         if (enqueued != null) {
             controller.removeRolesFromMember(enqueued, enqueuedRole).complete();
@@ -91,7 +91,7 @@ public class VoiceQueue {
         return this;
     }
 
-    public VoiceQueue remove(Member member, TextChannel replyChannel) {
+    VoiceQueue remove(Member member, TextChannel replyChannel) {
         queue.remove(member);
         if (enqueued == member) next();
         if (replyChannel != null) Actions.reply(member, replyChannel,"вы удаленны из очереди канала " + channel.getName());
@@ -99,7 +99,7 @@ public class VoiceQueue {
         return this;
     }
 
-    public void delete() {
+    void delete() {
         announcement.delete().complete();
         enqueuedRole.delete().complete();
         list.remove(channel);
