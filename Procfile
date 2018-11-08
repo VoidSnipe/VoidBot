@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* tk.voidfactory.discordbot.Main
+worker: java $JAVA_OPTS -cp target/classes:target/dependency/* tk.voidfactory.discordbot.Main
