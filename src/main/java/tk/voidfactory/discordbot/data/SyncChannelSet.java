@@ -1,6 +1,7 @@
 package tk.voidfactory.discordbot.data;
 
 import net.dv8tion.jda.core.entities.TextChannel;
+import org.postgresql.util.PSQLException;
 
 import java.net.URI;
 import java.net.URISyntaxException;

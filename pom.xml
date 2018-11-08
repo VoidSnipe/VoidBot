@@ -74,7 +74,7 @@
                 <configuration>
                     <appName>sw-broberon</appName>
                     <processTypes>
-                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* tk.voidfactory.discordbot.Main</web>
+                        <worker>java $JAVA_OPTS -cp target/classes:target/dependency/* tk.voidfactory.discordbot.Main</worker>
                     </processTypes>
                 </configuration>
 

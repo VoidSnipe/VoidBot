@@ -1,11 +1,8 @@
 package tk.voidfactory.discordbot;
 
-import com.sun.net.httpserver.HttpServer;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import tk.voidfactory.discordbot.data.SyncChannelSet;
-
-import java.net.InetSocketAddress;
 
 public class Main {
 
@@ -15,10 +12,6 @@ public class Main {
         shardBuilder.addEventListener(new MainEngine(Settings.PREFIX));
         shardBuilder.addEventListener(new tk.voidfactory.discordbot.music.Main());
         SyncChannelSet.init();
-        HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(System.getenv("PORT"))), 0);
-        server.createContext("/", exchange -> exchange.sendResponseHeaders(204, 0));
-        server.setExecutor(null);
-        server.start();
 
         for (int i = 0; i < 10; i++) {
             shardBuilder.useSharding(i, 10)
