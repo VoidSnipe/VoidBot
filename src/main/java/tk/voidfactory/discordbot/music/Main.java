@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.core.Permission;
 
 import net.dv8tion.jda.core.entities.Guild;
@@ -63,6 +64,10 @@ public class Main extends ListenerAdapter {
             } else if ("~purge".equals(command[0])) {
                 getGuildAudioPlayer(event.getGuild()).scheduler.clear();
                 skipTrack(event.getTextChannel());
+            } else if ("~info".equals(command[0])) {
+                AudioTrackInfo info =
+                        getGuildAudioPlayer(event.getGuild()).player.getPlayingTrack().getInfo();
+                event.getMessage().getChannel().sendMessage(info.author + " -- " + info.title).queue();
             }
         }
     }
